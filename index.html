@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
 <meta name="theme-color" content="#14110b" />
 <title>成语密码机 · 推理猜成语</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+<!-- 字体直接走系统字体，避免国内访问 Google Fonts 卡顿/FOUT -->
+<!-- 如需"马善政"那种毛笔标题，把字体文件下到 /fonts 自托管即可 -->
 <style>
   /* ============== 主题 · 中国风 ============== */
   :root{
@@ -35,8 +34,9 @@
     --gray-deep:#4c4232;
 
     --shadow:0 10px 30px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3);
-    --serif:"ZCOOL XiaoWei","STKaiti","KaiTi","楷体","Songti SC","Noto Serif SC",serif;
-    --title:"Ma Shan Zheng","ZCOOL XiaoWei","STKaiti",cursive;
+    /* 优先使用各端系统中文字体，避免远程加载 */
+    --serif:"STKaiti","Kaiti SC","KaiTi","楷体","Songti SC","STSong","SimSun","宋体","Hiragino Sans GB","PingFang SC","Microsoft YaHei",serif;
+    --title:"STXingkai","华文行楷","STKaiti","Kaiti SC","KaiTi","楷体","STSong","Songti SC",serif;
 
     /* 字号比例 · v3 (统一 1.3x) */
     --fs-body:17px;
