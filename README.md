@@ -2,6 +2,13 @@
 
 中式推理小游戏。Wordle 风格的颜色反馈 + 拖拽交互 + 五段教材分级题库。
 
+## 线上地址
+
+- 主：[chengyu-wordle-0l7.pages.dev](https://chengyu-wordle-0l7.pages.dev/) （Cloudflare Pages · 国内访问快）
+- 备：[chriszhang831-beep.github.io/chengyu-wordle](https://chriszhang831-beep.github.io/chengyu-wordle/) （GitHub Pages · 兜底）
+
+> 两个 URL 都跟着 `main` 分支自动部署，`git push` 后 1-2 分钟同步更新。
+
 ## 玩法
 
 1. 主页选择学段：小学 / 初中 / 高中 / 高考高频 / 成语字典。
