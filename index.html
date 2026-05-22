@@ -405,6 +405,9 @@
     display:inline-block;
   }
   .v-tianzige .tz.show span{
+    /* 静态终态保底：即使浏览器(微信 X5)没执行动画也能显示 */
+    opacity:1;
+    transform:scale(1) rotate(0);
     animation:tzDrop .5s ease both;
   }
   .v-tianzige .tz.show{
@@ -478,6 +481,9 @@
     position:relative;z-index:1;
   }
   .v-stamp.show{
+    /* 静态终态保底 */
+    opacity:1;
+    transform:scale(1) rotate(-4deg);
     animation:stampDown .55s cubic-bezier(.2,.9,.3,1.4) both,
               stampRipple 1s .55s ease-out both;
   }
@@ -503,6 +509,9 @@
     opacity:0;transform:scale(0) rotate(-30deg);
   }
   .v-stars.show .star{
+    /* 静态终态保底 */
+    opacity:1;
+    transform:scale(1) rotate(0);
     animation:starPop .55s cubic-bezier(.34,1.56,.64,1) both;
   }
   .v-stars .star.filled{
