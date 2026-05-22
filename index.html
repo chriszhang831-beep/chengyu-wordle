@@ -423,11 +423,48 @@
 
   .v-meaning{
     color:var(--ink-soft);font-size:17px;
-    line-height:1.6;margin:0 0 12px;min-height:1em;
+    line-height:1.6;margin:0 0 8px;min-height:1em;
     opacity:0;transition:opacity .4s ease;
     position:relative;z-index:1;
   }
   .v-meaning.show{opacity:1}
+
+  .v-source{
+    color:var(--muted);font-size:13px;
+    letter-spacing:1px;margin:0 0 10px;
+    opacity:0;transition:opacity .4s ease;
+    position:relative;z-index:1;
+  }
+  .v-source.show{opacity:1}
+
+  .v-story{
+    text-align:left;
+    color:var(--ink-soft);font-size:15px;line-height:1.9;
+    padding:14px 16px;
+    background:rgba(255,235,200,.04);
+    border:1px solid var(--line-soft);
+    border-left:3px solid var(--gold);
+    border-radius:8px;
+    margin:4px 0 14px;
+    opacity:0;transition:opacity .5s ease;
+    position:relative;z-index:1;
+  }
+  .v-story.show{opacity:1}
+  .v-story .story-clue{
+    color:var(--ink);
+    border-bottom:1px dashed var(--muted);
+    padding:0 1px;
+  }
+  .v-story .story-clue.active{
+    color:#1a1206;
+    background:linear-gradient(180deg, #f5c443, #e6b840);
+    border-bottom:none;
+    font-weight:700;
+    padding:1px 6px;
+    border-radius:3px;
+    margin:0 2px;
+    box-shadow:0 1px 0 rgba(0,0,0,.18);
+  }
 
   .v-stamp{
     display:inline-block;font-family:var(--title);
@@ -615,6 +652,8 @@
       <div class="tz"><span></span></div>
     </div>
     <div class="v-meaning" id="v-meaning"></div>
+    <div class="v-source" id="v-source" hidden></div>
+    <div class="v-story" id="v-story" hidden></div>
     <div class="v-stars" id="v-stars"></div>
     <div class="v-steps-tag" id="v-steps-tag"></div>
     <div class="v-stamp" id="v-stamp">破译成功</div>
@@ -639,7 +678,8 @@
       </div>
     </li>
     <li>灰色线索会在宫格里变暗，无法再选；黄/绿的线索保留，方便你回填到其他槽位。</li>
-    <li>4 个槽位<b>全部变绿</b>即通关，自动揭晓成语并盖章。</li>
+    <li>4 个槽位按典故叙事顺序<b>「起承转合」</b>排布：<b>位置 1（起）</b>多对应典故开端（如出处、主角），<b>位置 4（合）</b>多对应寓意启示。玩多了就有直觉。</li>
+    <li>4 个槽位<b>全部变绿</b>即通关，会揭晓典故故事并盖章。</li>
     <li>同一个成语<b>每次抽到的线索都不一样</b>，复玩不会一模一样。</li>
   </ul>
   <div class="dlg-actions">

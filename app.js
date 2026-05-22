@@ -53,6 +53,21 @@
   function sampleN(arr, n){
     return shuffle(arr).slice(0, n);
   }
+  // 从 arr 中等概率抽 n 个不重复元素，按它们在 arr 中的"原始顺序"返回
+  // 用于：正确线索保留 cluePool 的"起承转合"叙事位置
+  function sampleNSorted(arr, n){
+    const len = arr.length;
+    if (n >= len) return arr.slice();
+    const idx = Array.from({ length: len }, (_, i) => i);
+    for (let i = 0; i < n; i++){
+      const j = i + Math.floor(Math.random() * (len - i));
+      [idx[i], idx[j]] = [idx[j], idx[i]];
+    }
+    return idx.slice(0, n).sort((a, b) => a - b).map(i => arr[i]);
+  }
+
+  // 4 个槽位的"起承转合"标签
+  const SLOT_LABELS = ["起", "承", "转", "合"];
 
   /* ---------- 持久化 ---------- */
   const LS_KEY = "miyi.v3";
@@ -125,8 +140,9 @@
     const stage = getStage(stageId);
     if (!stage || !idiomData) return null;
 
-    // 1) 正确线索：从该成语的线索池里随机抽 4
-    const correctClues = sampleN(idiomData.cluePool, 4);
+    // 1) 正确线索：从该成语的线索池里随机抽 4，按 cluePool 原始顺序排列
+    //    这样槽位 1 = cluePool 中"靠前"的线索（典故开端），槽位 4 = "靠后"的线索（寓意启示）
+    const correctClues = sampleNSorted(idiomData.cluePool, 4);
 
     // 2) 干扰线索：从同学段其它成语的线索池中收集
     const distractorSet = new Set();
@@ -151,8 +167,11 @@
     const poolOrder = shuffle(correctClues.concat(distractors));
 
     return {
-      idiom:   idiomData.idiom,
-      meaning: idiomData.meaning || "",
+      idiom:    idiomData.idiom,
+      meaning:  idiomData.meaning || "",
+      source:   idiomData.source  || "",
+      story:    idiomData.story   || "",
+      cluePool: idiomData.cluePool.slice(),
       correctClues,
       distractors,
       poolOrder,
@@ -306,7 +325,7 @@
 
       const idx = document.createElement("span");
       idx.className = "slot-idx";
-      idx.textContent = `第${i+1}位`;
+      idx.textContent = `第${i+1}位 · ${SLOT_LABELS[i]}`;
       s.appendChild(idx);
 
       if (slot && slot.clue){
@@ -587,12 +606,51 @@
   }
 
   /* ---------- 胜利覆盖层 ---------- */
+  // 把故事文本里出现的线索词包成 <span>。activeClues 高亮（金底），其它线索仅弱化标记。
+  function renderStoryHTML(story, allClues, activeClues){
+    if (!story) return "";
+    const active = new Set(activeClues);
+    // 先做出现位置探测，按"长字符串优先"避免子串先被替换
+    const sortedActive = [...activeClues].sort((a, b) => b.length - a.length);
+    const sortedOther  = allClues.filter(c => !active.has(c)).sort((a, b) => b.length - a.length);
+
+    let text = story;
+    const subs = [];
+    let counter = 0;
+    function placeholder(){ return `\u0001CL${counter++}\u0001`; }
+
+    for (const c of sortedActive){
+      if (text.indexOf(c) >= 0){
+        const ph = placeholder();
+        text = text.split(c).join(ph);
+        subs.push({ ph, html: `<span class="story-clue active">${escapeHtml(c)}</span>` });
+      }
+    }
+    for (const c of sortedOther){
+      if (text.indexOf(c) >= 0){
+        const ph = placeholder();
+        text = text.split(c).join(ph);
+        subs.push({ ph, html: `<span class="story-clue">${escapeHtml(c)}</span>` });
+      }
+    }
+    // 转义剩余文本
+    text = escapeHtml(text);
+    // 占位符是 \u0001 包围的 ASCII，不会被 escapeHtml 处理
+    for (const s of subs){ text = text.split(s.ph).join(s.html); }
+    return text;
+  }
+  function escapeHtml(s){
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
   function openVictory(){
     const overlay = $("#overlay");
     overlay.classList.add("show");
 
     const cells     = overlay.querySelectorAll(".v-tianzige .tz");
     const meaning   = $("#v-meaning");
+    const sourceEl  = $("#v-source");
+    const storyEl   = $("#v-story");
     const starsEl   = $("#v-stars");
     const stepsTagEl= $("#v-steps-tag");
     const stamp     = $("#v-stamp");
@@ -600,6 +658,8 @@
 
     cells.forEach(c => c.classList.remove("show"));
     meaning.classList.remove("show");
+    sourceEl.classList.remove("show");
+    storyEl.classList.remove("show");
     starsEl.classList.remove("show");
     stepsTagEl.classList.remove("show");
     stamp.classList.remove("show");
@@ -609,6 +669,18 @@
     const chars = Array.from(STATE.instance.idiom);
     cells.forEach((c, i) => { c.querySelector("span").textContent = chars[i] || ""; });
     meaning.textContent = STATE.instance.meaning || "";
+
+    // 出处 + 故事（如果该成语有 source/story 字段则展示，否则隐藏）
+    const hasSource = !!STATE.instance.source;
+    const hasStory  = !!STATE.instance.story;
+    sourceEl.hidden = !hasSource;
+    storyEl.hidden  = !hasStory;
+    if (hasSource) sourceEl.textContent = `典故出处：${STATE.instance.source}`;
+    if (hasStory)  storyEl.innerHTML = renderStoryHTML(
+        STATE.instance.story,
+        STATE.instance.cluePool || [],
+        STATE.instance.correctClues || []
+      );
 
     // 评星
     const stars = STATE.lastStars || computeStars(STATE.steps || 999);
@@ -641,12 +713,20 @@
     const allDone = stage && getStageCompleted(stage.id).size >= stage.idioms.length;
     nextBtn.textContent = allDone ? "随机复习" : "下一题";
 
-    // 时序：田字格 → 含义 → 星星 → 步数标语 → 印章 → 按钮
+    // 时序：田字格 → 含义 →（出处 → 故事）→ 星星 → 步数标语 → 印章 → 按钮
     let t = 220;
     cells.forEach((c, i) => { setTimeout(() => c.classList.add("show"), t + i * 320); });
     t += cells.length * 320 + 120;
     setTimeout(() => meaning.classList.add("show"), t);
-    t += 300;
+    if (hasSource){
+      t += 180;
+      setTimeout(() => sourceEl.classList.add("show"), t);
+    }
+    if (hasStory){
+      t += 240;
+      setTimeout(() => storyEl.classList.add("show"), t);
+    }
+    t += 320;
     setTimeout(() => starsEl.classList.add("show"), t);
     t += 680;   // 等三颗星依次弹完
     setTimeout(() => stepsTagEl.classList.add("show"), t);
