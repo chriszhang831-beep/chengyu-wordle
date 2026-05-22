@@ -1,0 +1,21 @@
+{
+  "name": "成语密码机",
+  "short_name": "成语密码机",
+  "description": "中式推理猜成语 · 五学段题库 · 拖拽 + 评星",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14110b",
+  "theme_color": "#14110b",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

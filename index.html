@@ -7,6 +7,15 @@
 <title>成语密码机 · 推理猜成语</title>
 <!-- 字体直接走系统字体，避免国内访问 Google Fonts 卡顿/FOUT -->
 <!-- 如需"马善政"那种毛笔标题，把字体文件下到 /fonts 自托管即可 -->
+
+<!-- PWA · 添加到主屏幕 -->
+<link rel="manifest" href="./manifest.json" />
+<link rel="icon" type="image/svg+xml" href="./icon.svg" />
+<link rel="apple-touch-icon" href="./icon.svg" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="成语密码机" />
+<meta name="mobile-web-app-capable" content="yes" />
 <style>
   /* ============== 主题 · 中国风 ============== */
   :root{
@@ -642,5 +651,15 @@
 <script src="data.js"></script>
 <!-- 主逻辑 -->
 <script src="app.js"></script>
+<!-- Service Worker：让游戏可"添加到主屏幕"并离线可玩 -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(err => {
+        console.warn("SW register failed:", err);
+      });
+    });
+  }
+</script>
 </body>
 </html>

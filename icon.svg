@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- ¨ÑÌo -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#241a10"/>
+      <stop offset="100%" stop-color="#14110b"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- ÛÒÑrÅppàF	 -->
+  <g stroke="#d4af37" stroke-width="7" fill="none" stroke-linecap="round">
+    <path d="M 70 110 L 70 70 L 110 70"/>
+    <path d="M 402 70 L 442 70 L 442 110"/>
+    <path d="M 442 402 L 442 442 L 402 442"/>
+    <path d="M 110 442 L 70 442 L 70 402"/>
+  </g>
+
+  <!-- 1¢pà -->
+  <g transform="translate(256 256) rotate(-3)">
+    <rect x="-160" y="-160" width="320" height="320" rx="10"
+          fill="#b8392f" stroke="#8e251f" stroke-width="8"/>
+    <text x="0" y="80" text-anchor="middle"
+          fill="#f4ecd6"
+          font-family="STKaiti, &quot;Kaiti SC&quot;, KaiTi, &quot;wS&quot;, FangSong, STSong, serif"
+          font-size="240" font-weight="700">Æ</text>
+  </g>
+</svg>
