@@ -5,3 +5,6 @@ node_modules/
 Thumbs.db
 *.log
 *.zip
+batches.txt
+_gen_batches.js
+gemini_outputs/

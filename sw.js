@@ -6,7 +6,7 @@
  * 升级：版本号 CACHE 变化时，旧缓存会被自动清理
  */
 
-const CACHE = "miyi-v3-2026-05-22-3";
+const CACHE = "miyi-v3-2026-05-22-4";
 const CORE_ASSETS = [
   "./",
   "./index.html",
